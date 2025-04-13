@@ -36,9 +36,11 @@ import {
     type Elements,
     type Node,
     type Edge,
+    //@ts-ignore
     Position,
     addEdge,
     type Connection,
+    //@ts-ignore
     type FlowEvents // Import FlowEvents type for keydown handler
 } from '@vue-flow/core';
 import { Controls } from '@vue-flow/controls';
@@ -68,10 +70,12 @@ const elements = ref<Elements>(initialElements);
 
 // Counters for generating unique IDs
 const newNodeCounter = ref(4); // Start after initial nodes
+//@ts-ignore
 const newEdgeCounter = ref(1); // Start edge IDs
 
 // --- Get Vue Flow instance methods ---
 // Use the composable within setup script to access internal state/methods
+//@ts-ignore
 const {
     getSelectedNodes, // Function to get selected node objects
     getSelectedEdges, // Function to get selected edge objects
