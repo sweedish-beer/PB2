@@ -2,7 +2,7 @@
 <template>
   <v-app>
     <v-main>
-      <router-view /> {/* Display the current route's component */}
+      <router-view />
     </v-main>
   </v-app>
 </template>

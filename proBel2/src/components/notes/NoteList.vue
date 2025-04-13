@@ -10,11 +10,10 @@
           md="4"
           lg="3"
         >
-          <note-card :note="note" />
+          <note-card :note="note" @edit="handleEdit" />
         </v-col>
       </v-row>
     </div>
-
     <v-card v-else class="pa-4 text-center" flat>
       <v-card-text>
         You haven't created any notes yet. Click "Add Note" to start!
@@ -24,23 +23,31 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, type PropType } from 'vue';
-import type { Note } from '@/stores/notes'; // Import Note interface (adjust path if needed)
-
-// --- Placeholder for component we will create next ---
-// This import will cause errors until the file exists
+import { defineProps, defineEmits, type PropType } from 'vue'; // <-- Add defineEmits
+import type { Note } from '@/stores/notes';
 import NoteCard from './NoteCard.vue';
-// ---
 
-// Define component props
+// Keep props definition as is
 const props = defineProps({
   notes: {
-    type: Array as PropType<Note[]>, // Expect an array of Note objects
+    type: Array as PropType<Note[]>,
     required: true,
   },
 });
+
+// --- Add this ---
+// Define the 'edit' event that this component can emit
+const emit = defineEmits(['edit']);
+
+// Method to handle the @edit event received from NoteCard
+const handleEdit = (note: Note) => {
+  // Re-emit the 'edit' event upwards, passing the note object along
+  emit('edit', note);
+};
+// --- End of added code ---
+
 </script>
 
 <style scoped>
-/* Add styles if needed */
+/* Styles remain the same */
 </style>

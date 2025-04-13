@@ -75,10 +75,14 @@ export const useNotesStore = defineStore("notes", {
       content?: string | null;
     }) {
       const authStore = useAuthStore();
+      console.log("addNote called. Auth Store User:", authStore.user);
+      console.log("Is Authenticated:", authStore.isAuthenticated);
       if (!authStore.user) {
+        console.error("Attempted to add note, but user is not authenticated!");
         this.error = "User not authenticated";
-        return null; // Return null or throw error to indicate failure
+        return null;
       }
+      console.log("Attempting insert with user_id:", authStore.user.id);
 
       this.loading = true;
       this.error = null;

@@ -30,7 +30,7 @@
       {{ notesStore.getError }}
     </v-alert>
 
-    <note-list :notes="notesStore.getNotes" />
+    <note-list :notes="notesStore.getNotes" @edit="handleEditRequest" />
 
     <note-editor-dialog
       v-model="dialogVisible"
@@ -43,52 +43,47 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useNotesStore } from '../stores/notes'; // Adjust path if needed
-
-// --- Placeholders for components we will create next ---
-// These imports will cause errors until the files exist
-import NoteList from '../components/notes/NoteList.vue';
+import { useNotesStore, type Note } from '@/stores/notes'; // Import Note interface
+import NoteList from '@/components/notes/NoteList.vue';
 import NoteEditorDialog from '@/components/notes/NoteEditorDialog.vue';
-// ---
 
-// Store instance
 const notesStore = useNotesStore();
-
-// Dialog state
 const dialogVisible = ref(false);
-const selectedNote = ref(null); // Holds note data when editing
+const selectedNote = ref<Note | null>(null); // Use Note interface type
 
-// Fetch notes when the component is mounted
 onMounted(() => {
   notesStore.fetchNotes();
 });
 
-// Methods to handle dialog
 const openAddNoteDialog = () => {
-  selectedNote.value = null; // Clear selected note for adding
+  selectedNote.value = null;
   dialogVisible.value = true;
 };
 
-// Method to handle opening dialog for editing (will be called from NoteList/NoteCard)
-const openEditNoteDialog = (note: any) => { // Use 'any' for now, replace with Note interface later
-    selectedNote.value = note;
-    dialogVisible.value = true;
+// --- Renamed this function ---
+// Handles the @edit event emitted from NoteList
+const handleEditRequest = (note: Note) => { // Use Note interface type
+  console.log('Edit requested for note:', note); // Add log for debugging
+  selectedNote.value = note; // Set the note to be edited
+  dialogVisible.value = true; // Open the dialog
 };
+// ---
 
-// Method to save note (called from dialog emit)
-const handleSaveNote = async (noteData: any) => { // Use 'any' for now
-  if (selectedNote.value) {
+const handleSaveNote = async (noteData: { title?: string | null; content?: string | null }) => { // Use specific type
+  if (selectedNote.value && selectedNote.value.id) {
     // Editing existing note
+    console.log('Saving updated note:', selectedNote.value.id, noteData); // Add log
     await notesStore.updateNote(selectedNote.value.id, noteData);
   } else {
     // Adding new note
+    console.log('Saving new note:', noteData); // Add log
     await notesStore.addNote(noteData);
   }
-  // Dialog will close itself via v-model
+  // Dialog closes via v-model binding in NoteEditorDialog
 };
 
 </script>
 
 <style scoped>
-/* Add styles if needed */
+/* Styles remain the same */
 </style>
