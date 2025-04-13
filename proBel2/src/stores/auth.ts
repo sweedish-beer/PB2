@@ -9,8 +9,9 @@ export const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null as User | null, // Holds user data if logged in
     session: null as Session | null, // Holds session data if logged in
-    loading: false, // To track loading state during auth operations
+    loading: true, // To track loading state during auth operations
     authError: null as Error | null, // To store any auth errors
+    authInitialized: false, // To track if auth has been initialized
   }),
 
   // GETTERS: Computed properties derived from state
@@ -25,37 +26,35 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     // Action to check the current session when the app loads or store is initialized
     async initializeAuthListener() {
-      this.loading = true;
       this.authError = null;
       try {
         // Get initial session data
         const {
           data: { session },
-          error,
         } = await supabase.auth.getSession();
-        if (error) throw error;
+       //Handle initial session
         this.session = session;
         this.user = session?.user ?? null;
 
-        // Listen for changes in authentication state (login, logout)
+        // Set up listener AFTER initial check
         supabase.auth.onAuthStateChange((event, session) => {
           console.log("Auth state changed:", event, session);
-          this.session = session;
-          this.user = session?.user ?? null;
-          this.loading = false; // Update loading state after change
-
-          // Optional: Redirect on login/logout
-          // if (event === 'SIGNED_IN') {
-          //   router.push('/'); // Redirect to home after sign in
-          // }
-          // if (event === 'SIGNED_OUT') {
-          //   router.push('/login'); // Redirect to login after sign out
-          // }
+          const store = useAuthStore(); // Get store instance inside callback
+          store.session = session;
+          store.user = session?.user ?? null;
+          store.loading = false;
         });
+
+        // Mark initialization complete AFTER session check and listener setup
+        this.authInitialized = true; // <-- Set flag here
+
       } catch (error: any) {
         console.error("Error initializing auth:", error);
         this.authError = error;
+        this.authInitialized = true; // Also set true on error to allow navigation
       } finally {
+         // Set loading false only after initialization attempt is fully complete
+         // This ensures guards wait until we know the initial auth status.
         this.loading = false;
       }
     },

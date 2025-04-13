@@ -9,13 +9,7 @@ import vuetify from "vite-plugin-vuetify"; // Import the Vuetify plugin
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('v-')
-        }
-      }
-    }),
+    vue(),
     vuetify({ autoImport: true }), // Add vuetify plugin here with autoImport enabled
   ],
   resolve: {
