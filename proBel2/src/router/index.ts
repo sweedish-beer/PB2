@@ -34,11 +34,19 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }, // <-- Mark as requiring authentication
   },
   {
-    path: '/notes',
-    name: 'Notes',
+    path: "/notes",
+    name: "Notes",
+    //@ts-expect-error
     component: () => import("../views/NotesView.vue"),
-    meta: { requiresAuth: true } // <-- Protect this route
-  }
+    meta: { requiresAuth: true }, // <-- Protect this route
+  },
+  {
+    path: "/doodle",
+    name: "Doodle",
+    //@ts-expect-error
+    component: () => import("../views/DoodleView.vue"), // Lazy-load the view
+    meta: { requiresAuth: true }, // <-- Protect this route
+  },
 ];
 
 const router = createRouter({
