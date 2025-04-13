@@ -61,6 +61,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/FlowchartView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route
   },
+  {
+    // <-- Add this route object
+    path: "/chat",
+    name: "Chat",
+    //@ts-expect-error
+    component: () => import("../views/ChatView.vue"), // Lazy-load the view
+    meta: { requiresAuth: true }, // <-- Protect this route
+  },
 ];
 
 const router = createRouter({
