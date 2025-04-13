@@ -1,0 +1,23 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    // -- Add these two lines --
+    "moduleResolution": "Bundler", // Explicitly set module resolution
+    "types": [
+      "vuetify"
+    ], // Add vuetify types
+    // -- End of added lines --
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+    // "noUncheckedSideEffectImports": true // Temporarily commented out, can cause issues sometimes
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
+}

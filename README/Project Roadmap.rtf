@@ -1,0 +1,122 @@
+
+//$** Project Roadmap: Multi-Functional Web App **$\\
+
+The development will proceed in phases, ensuring we have a solid foundation before building complex features and allowing for iterative development and testing.
+
+**Phase 1: Foundation & Setup (Estimated Time: ~1-2 sessions)**
+
+* **Goal:** Set up the basic project structure, routing, UI framework, state management, and user authentication.
+* **Steps:**
+    1.  **Initialize Project:**
+        * Create a new Vue.js project using Vite (`npm create vite@latest`).
+        * Choose Vue and TypeScript/JavaScript as needed.
+    2.  **Install Core Dependencies:**
+        * Add Vue Router: `npm install vue-router@4`
+        * Add Pinia: `npm install pinia`
+        * Add Vuetify: Follow Vuetify 3 installation guide (`npm install vuetify@next @mdi/font`).
+        * Add Supabase client: `npm install @supabase/supabase-js`
+    3.  **Basic Project Structure:**
+        * Set up standard folders: `src/components`, `src/views`, `src/router`, `src/stores`, `src/layouts`, `src/services`.
+    4.  **Configure Vuetify:**
+        * Create a Vuetify plugin (`src/plugins/vuetify.js`).
+        * Configure basic themes (light/dark), icons (MDI).
+        * Integrate Vuetify into the main Vue app instance (`main.js` or `main.ts`).
+    5.  **Configure Routing:**
+        * Set up `src/router/index.js` with initial routes (e.g., Home, Login, Register, Dashboard/App).
+        * Implement basic route guards for authentication later.
+    6.  **Configure Pinia:**
+        * Create a Pinia instance and integrate it into the main Vue app instance.
+    7.  **Supabase Setup:**
+        * Create a Supabase project on their platform.
+        * Get API URL and anon key.
+        * Create a Supabase client service (`src/services/supabase.js`) to initialize and export the client.
+    8.  **Authentication Implementation:**
+        * Create Login and Register views/components using Vuetify form elements.
+        * Implement Supabase Auth functions (email/password sign-up, sign-in, sign-out).
+        * Create a Pinia store (`src/stores/auth.js`) to manage user session state.
+        * Implement route guards in `src/router/index.js` to protect authenticated routes.
+        * Create a basic user profile/settings page.
+
+**Phase 2: Core Feature Development (Iterative; Estimated Time: ~5-10 sessions, depending on complexity)**
+
+* **Goal:** Build each core feature incrementally. We'll likely tackle them one by one, but some parallel work might be possible. The order below is a suggestion and can be adjusted.
+* **Steps (for each feature, roughly):**
+    1.  **Notes Feature:**
+        * **When:** After basic authentication is working.
+        * **How:**
+            * Create `NotesView.vue` and associated components (`NoteList.vue`, `NoteEditor.vue`).
+            * Design UI using Vuetify (Cards, Text Fields, Buttons).
+            * Set up Supabase table for notes (columns: `id`, `user_id`, `title`, `content`, `created_at`, `updated_at`).
+            * Create a Pinia store (`src/stores/notes.js`) for managing notes state.
+            * Implement Supabase CRUD functions (fetch, add, update, delete notes) within the store actions or a dedicated service.
+            * Connect UI components to the store and actions.
+            * Add search/filtering capabilities.
+    2.  **Doodle Feature:**
+        * **When:** Can be done relatively independently once the basic app structure is in place.
+        * **How:**
+            * Refine the `DoodleComponent.vue` we discussed earlier.
+            * Add UI controls (Vuetify Sliders, Color Pickers, Buttons) for brush size, color, eraser, clear canvas.
+            * Use p5.js functions to handle these controls (`p.stroke()`, `p.strokeWeight()`, `p.background()`).
+            * Implement "Save as Image" using `p.saveCanvas()`.
+            * Integrate the component into a dedicated view or perhaps within the Notes feature.
+    3.  **Calculator Feature:**
+        * **When:** Can be done relatively independently.
+        * **How:**
+            * Create `CalculatorView.vue` or `CalculatorComponent.vue`.
+            * Design UI using Vuetify buttons (`v-btn`) and a display area.
+            * Implement calculation logic in JavaScript (handle number inputs, operators, equals).
+            * Manage display state using `ref` or `reactive`.
+            * (Optional Later): Add history or scientific functions.
+    4.  **Flowchart Feature:**
+        * **When:** After the basic app structure is stable. Requires understanding state management.
+        * **How:**
+            * Install Vue Flow (`npm install @vue-flow/core @vue-flow/controls @vue-flow/minimap`).
+            * Create `FlowchartView.vue`.
+            * Integrate basic Vue Flow components (`<VueFlow>`, `<Controls>`, `<MiniMap>`).
+            * Set up state management (likely Pinia, `src/stores/flowchart.js`) to hold node and edge data (`elements`).
+            * Implement adding/removing nodes and edges triggered by UI elements (buttons, drag-and-drop).
+            * Explore saving/loading flowchart state (e.g., saving the `elements` array as JSON to Supabase).
+            * Investigate export options (Vue Flow might have utilities, or use an external library).
+    5.  **AI Chat Feature:**
+        * **When:** Often tackled later as it involves external API integration and backend proxy setup.
+        * **How:**
+            * **Backend Proxy:** Create a Vercel Edge Function (`api/chat.js`). This function will receive requests from the frontend, securely add the AI Provider API key, forward the request to the AI API, and return the response. Handle CORS.
+            * **Frontend UI:** Create `ChatView.vue`. Use Vuetify components for chat interface (input field, send button, message display area).
+            * **State Management:** Use Pinia (`src/stores/chat.js`) to manage conversation history and loading state.
+            * **API Call:** Implement a function (e.g., in a service `src/services/ai.js`) to send user messages to the Vercel Edge Function endpoint (`/api/chat`).
+            * **Display:** Update the UI dynamically as responses are received.
+
+**Phase 3: UI/UX Refinement & Integration (Estimated Time: ~2-3 sessions)**
+
+* **Goal:** Polish the application's look, feel, and responsiveness. Ensure features work well together.
+* **Steps:**
+    1.  **Responsiveness:** Test and adjust layouts on different screen sizes using Vuetify's grid system and helper classes.
+    2.  **Theming:** Fully implement and test light/dark mode switching. Ensure all components respect the theme.
+    3.  **Navigation:** Refine main navigation (e.g., Drawer, App Bar) for clarity and ease of use.
+    4.  **Error Handling:** Implement user-friendly error messages for API failures, form validation errors, etc.
+    5.  **Consistency:** Ensure consistent design language (colors, fonts, spacing, component usage) across all features.
+    6.  **Code Cleanup:** Refactor code for clarity, performance, and maintainability.
+
+**Phase 4: Deployment & Testing (Estimated Time: ~1-2 sessions + ongoing)**
+
+* **Goal:** Deploy the application to the web and perform final testing.
+* **Steps:**
+    1.  **Vercel Setup:** Connect GitHub/GitLab repository to Vercel.
+    2.  **Environment Variables:** Configure environment variables in Vercel for Supabase URL/Key and any AI API keys (used by the Edge Function). **Never commit API keys directly to code.**
+    3.  **Build & Deploy:** Configure Vercel build settings (Vite framework preset). Trigger deployments.
+    4.  **Testing:**
+        * Cross-browser testing (Chrome, Firefox, Safari, Edge).
+        * Device testing (desktop, tablet, mobile).
+        * Functionality testing (ensure all features work as expected in the deployed environment).
+        * Authentication flow testing.
+    5.  **Monitoring:** Set up basic monitoring or logging if needed.
+
+**Rationale for this order:**
+
+* **Foundation First:** Getting setup, routing, and authentication working provides the basic structure needed for everything else.
+* **Incremental Features:** Building features one by one makes the process manageable and allows for focused development and testing.
+* **Backend Later:** Setting up the AI proxy (Vercel Edge Function) is deferred slightly as it depends on having a frontend to interact with it and involves secure handling of API keys.
+* **UI Polish Last:** Refining the UI/UX is best done once the core functionalities are in place.
+* **Deployment:** This naturally comes at the end but involves configuration that relies on previous steps (like environment variables).
+
+This roadmap provides a structured approach. We can adjust it as we go based on challenges encountered or shifting priorities.
