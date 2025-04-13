@@ -1,57 +1,84 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="drawer" temporary> {/* Use temporary for mobile overlay */}
+  <v-app :theme="currentTheme">
+    <v-navigation-drawer v-model="drawer" temporary>
       <v-list nav dense>
         <v-list-item prepend-icon="mdi-view-dashboard" title="Dashboard" :to="{ name: 'Dashboard' }" link></v-list-item>
         <v-list-item prepend-icon="mdi-note-multiple" title="Notes" :to="{ name: 'Notes' }" link></v-list-item>
         <v-list-item prepend-icon="mdi-palette" title="Doodle" :to="{ name: 'Doodle' }" link></v-list-item>
         <v-list-item prepend-icon="mdi-calculator-variant" title="Calculator" :to="{ name: 'Calculator' }" link></v-list-item>
-         <v-list-item prepend-icon="mdi-chat" title="AI Chat" :to="{ name: 'Chat' }" link></v-list-item>
+        <v-list-item prepend-icon="mdi-chat" title="AI Chat" :to="{ name: 'Chat' }" link></v-list-item>
+        <v-list-item prepend-icon="mdi-graph-outline" title="Flowchart" :to="{ name: 'Flowchart' }" link></v-list-item> 
         <v-divider class="my-2"></v-divider>
-
         <v-list-item prepend-icon="mdi-logout" title="Logout" @click="handleLogout" link></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar color="primary" density="compact">
-       {/* Button to toggle drawer on mobile/smaller screens */}
       <template v-slot:prepend>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
 
-      <v-app-bar-title>Multi-App</v-app-bar-title> {/* Or use dynamic title */}
+      <v-app-bar-title>Multi-App</v-app-bar-title>
 
       <v-spacer></v-spacer>
 
-      {/* Add other app bar items like theme toggle or user menu later */}
+      <v-btn :icon="themeIcon" @click="toggleTheme"></v-btn>
+
+      {/* Add user menu etc. here later */}
 
     </v-app-bar>
 
     <v-main>
-       {/* The content of the current route will be rendered here */}
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue'; // Added onMounted, computed
+// import { useRouter } from 'vue-router'; // Not needed if guard handles redirect
+import { useAuthStore } from '@/stores/auth';
+import { useTheme } from 'vuetify'; // Import useTheme
 
-import { useAuthStore } from '@/stores/auth'; // Adjust path if needed
+// Drawer state
+const drawer = ref(false);
 
-// State for controlling the navigation drawer visibility
-const drawer = ref(false); // Start closed, use 'temporary' prop for mobile overlay
-
-// Get store and router instances
+// Auth store
 const authStore = useAuthStore();
+
+// --- Theme Handling ---
+const theme = useTheme(); // Get Vuetify theme instance
+const currentTheme = ref<'light' | 'dark'>('light'); // Local ref for theme name
+
+// Function to toggle theme
+const toggleTheme = () => {
+  const newTheme = theme.global.current.value.dark ? 'light' : 'dark';
+  theme.global.name.value = newTheme; // Update Vuetify theme
+  localStorage.setItem('appTheme', newTheme); // Save preference
+  currentTheme.value = newTheme; // Update local ref if needed for v-app :theme
+};
+
+// Computed icon based on current theme
+const themeIcon = computed(() => {
+    // Use theme.global.name.value directly if preferred over local currentTheme.value
+    return theme.global.current.value.dark ? 'mdi-weather-night' : 'mdi-weather-sunny';
+});
+
+// Load saved theme on component mount
+onMounted(() => {
+  const savedTheme = localStorage.getItem('appTheme') as 'light' | 'dark' | null;
+  // Check if theme is valid, otherwise default to 'light'
+  const initialTheme = savedTheme && ['light', 'dark'].includes(savedTheme) ? savedTheme : 'light';
+  theme.global.name.value = initialTheme;
+  currentTheme.value = initialTheme;
+});
+// --- End Theme Handling ---
 
 
 // Logout action
 const handleLogout = async () => {
   await authStore.signOut();
-  // Route guards should automatically redirect to login,
-  // but we can force it if needed:
-  // router.push({ name: 'Login' });
+  // No explicit redirect needed, route guard should handle it
 };
 </script>
 
