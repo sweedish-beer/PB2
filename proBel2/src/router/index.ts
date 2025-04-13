@@ -54,6 +54,13 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/CalculatorView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route (assuming calculator is for logged-in users)
   },
+  {
+    path: "/flowchart",
+    name: "Flowchart",
+    //@ts-expect-error
+    component: () => import("../views/FlowchartView.vue"), // Lazy-load the view
+    meta: { requiresAuth: true }, // <-- Protect this route
+  },
 ];
 
 const router = createRouter({
