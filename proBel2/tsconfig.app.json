@@ -1,25 +1,31 @@
+// tsconfig.app.json
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
-    // -- Add these two lines --
-    "moduleResolution": "Bundler", // Explicitly set module resolution
+    // --- Add/Ensure these lines exist ---
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    // --- End Add/Ensure ---
+    "moduleResolution": "Bundler",
     "types": [
       "vuetify"
-    ], // Add vuetify types
-    // -- End of added lines --
+    ], // Keep only vuetify (or remove types if empty)
+    "skipLibCheck": true, // Keep this from previous step
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    // "noUncheckedSideEffectImports": true // Temporarily commented out, can cause issues sometimes
-    
-    "skipLibCheck": true,
+    "noUnusedLocals": true, // Consider setting to false if it causes issues with setup props
+    "noUnusedParameters": true, // Consider setting to false
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
-  ]
+  ],
+  // Make sure 'api/**/*.ts' is excluded if you have a separate tsconfig for API, otherwise include it if needed.
+  // "exclude": ["node_modules", "api"] // Example if API has own config
 }

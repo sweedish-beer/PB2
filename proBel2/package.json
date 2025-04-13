@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.14.1",
+    "@types/p5": "^1.7.6",
     "@vercel/edge": "^1.2.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",

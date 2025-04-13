@@ -4,7 +4,7 @@
     <VueFlow
         v-model="elements"
         @connect="onConnect"
-        @pane-key-down="onPaneKeyDown"
+        
     >
         <Controls />
 
@@ -101,59 +101,57 @@ const addNode = () => {
 
 // Method called by VueFlow when a connection is made via dragging
 const onConnect = (params: Connection | Edge) => {
-  // Assign a unique ID to the new edge
-  params.id = `e-${newEdgeCounter.value++}`;
-  // Optionally make the new edge animated
-  params.animated = true;
-  // Use the addEdge utility function from Vue Flow to add the edge
-  // This correctly handles the connection parameters and updates the elements ref
-  addEdge(params, elements.value);
+  // Don't try to modify params.id or params.animated directly
+  // Pass params directly to addEdge, and add custom data separately if needed
+  const edgeToAdd = { ...params, animated: true }; // Create new object if adding properties
+  // Or just pass params if no extra props needed initially: addEdge(params, elements.value)
+  addEdge(edgeToAdd, elements.value);
 };
 
 // Replace the ENTIRE existing onPaneKeyDown function with this one:
-const onPaneKeyDown = (event: FlowEvents['paneKeyDown']) => {
-    if (event.key === 'Backspace' || event.key === 'Delete') {
-        console.log('Delete/Backspace pressed (Attempting Manual Filter)');
+//const onPaneKeyDown = (event: FlowEvents['paneKeyDown']) => {
+  //  if (event.key === 'Backspace' || event.key === 'Delete') {
+    //    console.log('Delete/Backspace pressed (Attempting Manual Filter)');
 
         // Find IDs of elements marked as selected directly in our ref
-        const selectedNodeIds = elements.value
-            .filter(el => el.selected && 'position' in el) // Nodes have 'position' property
-            .map(el => el.id);
-        const selectedEdgeIds = elements.value
-            .filter(el => el.selected && 'source' in el) // Edges have 'source' property
-            .map(el => el.id);
+      //  const selectedNodeIds = elements.value
+        //    .filter(el => el.selected && 'position' in el) // Nodes have 'position' property
+          //  .map(el => el.id);
+       // const selectedEdgeIds = elements.value
+         //   .filter(el => el.selected && 'source' in el) // Edges have 'source' property
+           // .map(el => el.id);
 
-        console.log('Manually found Selected Node IDs:', selectedNodeIds);
-        console.log('Manually found Selected Edge IDs:', selectedEdgeIds);
+       // console.log('Manually found Selected Node IDs:', selectedNodeIds);
+      //  console.log('Manually found Selected Edge IDs:', selectedEdgeIds);
 
         // Proceed if any elements were found marked as selected
-        if (selectedNodeIds.length > 0 || selectedEdgeIds.length > 0) {
+       // if (selectedNodeIds.length > 0 || selectedEdgeIds.length > 0) {
 
             // Create a new array excluding selected elements and connected edges
-            elements.value = elements.value.filter(el => {
+         //   elements.value = elements.value.filter(el => {
                 // Exclude selected nodes
-                if (selectedNodeIds.includes(el.id)) {
-                    return false;
-                }
+             //   if (selectedNodeIds.includes(el.id)) {
+               //     return false;
+               // }
                 // Exclude selected edges
-                if (selectedEdgeIds.includes(el.id)) {
-                    return false;
-                }
+               // if (selectedEdgeIds.includes(el.id)) {
+              //      return false;
+            //    }
                 // Exclude edges connected to deleted nodes
-                if ('source' in el && (selectedNodeIds.includes(el.source) || selectedNodeIds.includes(el.target))) {
-                     console.log(`Filtering out edge ${el.id} connected to deleted node`);
-                     return false;
-                }
+            //    if ('source' in el && (selectedNodeIds.includes(el.source) || selectedNodeIds.includes(el.target))) {
+                   //  console.log(`Filtering out edge ${el.id} connected to deleted node`);
+                 //    return false;
+            //    }
                 // Keep all other elements
-                return true;
-            });
+          //      return true;
+         //   });
 
-            console.log('Elements after manual filtering:', elements.value);
-        } else {
-             console.log('No elements found with .selected property true in the elements array.');
-        }
-    }
-}
+        //    console.log('Elements after manual filtering:', elements.value);
+     //   } else {
+    //         console.log('No elements found with .selected property true in the elements array.');
+ //      }
+  //  }
+//}
 
 </script>
 
