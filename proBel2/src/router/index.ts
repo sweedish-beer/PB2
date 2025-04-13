@@ -31,38 +31,37 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/DashboardView.vue"),
-    meta: { requiresAuth: true }, // <-- Mark as requiring authentication
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Mark as requiring authentication
   },
   {
     path: "/notes",
     name: "Notes",
     component: () => import("../views/NotesView.vue"),
-    meta: { requiresAuth: true }, // <-- Protect this route
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Protect this route
   },
   {
     path: "/doodle",
     name: "Doodle",
     component: () => import("../views/DoodleView.vue"), // Lazy-load the view
-    meta: { requiresAuth: true }, // <-- Protect this route
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Protect this route
   },
   {
     path: "/calculator",
     name: "Calculator",
     component: () => import("../views/CalculatorView.vue"), // Lazy-load the view
-    meta: { requiresAuth: true }, // <-- Protect this route (assuming calculator is for logged-in users)
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Protect this route (assuming calculator is for logged-in users)
   },
   {
     path: "/flowchart",
     name: "Flowchart",
     component: () => import("../views/FlowchartView.vue"), // Lazy-load the view
-    meta: { requiresAuth: true }, // <-- Protect this route
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Protect this route
   },
   {
-    // <-- Add this route object
     path: "/chat",
     name: "Chat",
     component: () => import("../views/ChatView.vue"), // Lazy-load the view
-    meta: { requiresAuth: true }, // <-- Protect this route
+    meta: { requiresAuth: true, layout: "DefaultLayout" }, // <-- Protect this route
   },
 ];
 
