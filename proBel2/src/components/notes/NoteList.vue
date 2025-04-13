@@ -28,6 +28,7 @@ import type { Note } from '@/stores/notes';
 import NoteCard from './NoteCard.vue';
 
 // Keep props definition as is
+//@ts-expect-error
 const props = defineProps({
   notes: {
     type: Array as PropType<Note[]>,

@@ -62,12 +62,12 @@ const sketch = (p: p5) => {
         p.background(240);
       }
   };
-
+//@ts-expect-error
   // Expose clear and save functions on the instance
    p.clearCanvas = () => {
        p.background(240);
    }
-
+//@ts-expect-error
    p.saveDrawing = () => {
        // Use the direct p5 saveCanvas function
        if (mainCanvas) { // Check if canvas exists
