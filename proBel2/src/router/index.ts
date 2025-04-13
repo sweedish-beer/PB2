@@ -33,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/DashboardView.vue"),
     meta: { requiresAuth: true }, // <-- Mark as requiring authentication
   },
+  {
+    path: '/notes',
+    name: 'Notes',
+    component: () => import("../views/NotesView.vue"),
+    meta: { requiresAuth: true } // <-- Protect this route
+  }
 ];
 
 const router = createRouter({
@@ -41,7 +47,7 @@ const router = createRouter({
 });
 
 // Global Navigation Guard
-//@ts-expect-error
+//@ts-ignore
 router.beforeEach(async (to, from, next) => {
   // Instantiate the auth store INSIDE the guard
   const authStore = useAuthStore();
