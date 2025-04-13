@@ -76,8 +76,7 @@ const sketch = (p: p5) => {
            console.error("Canvas not available for saving.");
        }
    }
-   (p as any).clearCanvas = p.clearCanvas;
-   (p as any).saveDrawing = p.saveDrawing;
+   
 };
 
 // --- onMounted, onUnmounted, watchers remain the same ---
@@ -95,15 +94,21 @@ onUnmounted(() => {
 });
 
  watch(() => props.clearCanvasTrigger, () => {
-    if (p5Instance && typeof (p5Instance as any).clearCanvas === 'function') {
-       (p5Instance as any).clearCanvas();
-    } else { console.warn("Clear trigger: p5 instance/func not ready."); }
+    if (p5Instance) { // Check if instance exists
+       console.log("Triggering background clear"); // Debug log
+       p5Instance.background(backgroundColor); // Call background() directly
+    } else {
+        console.warn("Clear trigger fired but p5 instance not ready.");
+    }
  });
 
  watch(() => props.saveCanvasTrigger, () => {
-    if (p5Instance && typeof (p5Instance as any).saveDrawing === 'function') {
-       (p5Instance as any).saveDrawing();
-    } else { console.warn("Save trigger: p5 instance/func not ready."); }
+    if (p5Instance) { // Check if instance exists
+        console.log("Calling saveCanvas..."); // Debug log
+       p5Instance.saveCanvas('myDoodle.png'); // Call saveCanvas directly
+    } else {
+        console.warn("Save trigger fired but p5 instance not ready.");
+    }
  });
 // --- End of watchers ---
 
