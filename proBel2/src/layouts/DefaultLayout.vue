@@ -44,7 +44,7 @@ const drawer = ref(false); // Start closed, use 'temporary' prop for mobile over
 
 // Get store and router instances
 const authStore = useAuthStore();
-const router = useRouter();
+
 
 // Logout action
 const handleLogout = async () => {
