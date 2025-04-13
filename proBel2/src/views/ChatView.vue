@@ -22,7 +22,7 @@
           <div v-for="(message, index) in messages" :key="index"
                :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message', 'mb-3']">
             <v-chip :color="message.role === 'user' ? 'primary' : 'surface-variant'" label>
-               <pre class="message-content">{{ message.content }}</pre>
+               {{ message.content }}
             </v-chip>
           </div>
 
@@ -155,7 +155,8 @@ onMounted(() => {
 
 .message {
   display: flex;
-  max-width: 80%;
+  max-width: 80%; /* Limit width of the message container */
+  /* Align self based on role */
 }
 
 .user-message {
@@ -175,4 +176,21 @@ onMounted(() => {
 .provider-select {
     max-width: 200px; /* Limit width of select */
 }
+
+/* --- Add/Modify these rules --- */
+.message .v-chip {
+  height: auto; /* Allow chip height to adjust to content */
+  white-space: normal; /* Allow wrapping within the chip */
+  max-width: 100%; /* Prevent chip from exceeding message container width */
+  padding-top: 8px; /* Add some padding */
+  padding-bottom: 8px;
+}
+
+.message .v-chip :deep(.v-chip__content) {
+   display: block; /* Make content behave like a block for wrapping */
+   white-space: pre-wrap; /* Preserve whitespace (like line breaks) but allow wrapping */
+   word-break: break-word; /* Force long words/URLs to break */
+}
+/* --- End Add/Modify --- */
+
 </style>
