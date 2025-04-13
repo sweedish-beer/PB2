@@ -12,8 +12,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
     // "noUncheckedSideEffectImports": true // Temporarily commented out, can cause issues sometimes
+    
+    "skipLibCheck": true,
   },
   "include": [
     "src/**/*.ts",

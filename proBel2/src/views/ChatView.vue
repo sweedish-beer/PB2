@@ -19,15 +19,28 @@
           </v-toolbar>
 
         <div ref="messageAreaRef" class="message-area flex-grow-1 pa-4">
-          <div class="message user-message mb-3">
-             <v-chip color="primary" label>Hello AI!</v-chip>
-           </div>
-           <div class="message assistant-message mb-3">
-              <v-chip color="grey-lighten-1" label>Hello User! How can I help you today?</v-chip>
-           </div>
-           <div v-if="isLoading" class="message assistant-message mb-3">
-               <v-progress-circular indeterminate size="20" class="mr-2"></v-progress-circular> Thinking...
-           </div>
+          <div v-for="(message, index) in messages" :key="index"
+               :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message', 'mb-3']">
+            <v-chip :color="message.role === 'user' ? 'primary' : 'surface-variant'" label>
+               <pre class="message-content">{{ message.content }}</pre>
+            </v-chip>
+          </div>
+
+          <div v-if="isLoading" class="message assistant-message mb-3 d-flex align-center">
+             <v-progress-circular indeterminate size="20" width="2" class="mr-2"></v-progress-circular>
+             <span>Thinking...</span>
+          </div>
+           <v-alert
+              v-if="chatError"
+              type="error"
+              density="compact"
+              variant="tonal"
+              class="mt-3"
+              closable
+              @click:close="clearChatError"
+            >
+             {{ chatError }}
+            </v-alert>
         </div>
 
         <div class="input-area pa-2 pb-4 d-flex align-center" style="background-color: rgb(var(--v-theme-surface));">
@@ -59,46 +72,53 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref, computed, nextTick, watch, onMounted } from 'vue'; // Added computed, onMounted
+import { useChatStore } from '@/stores/chat'; // Import the chat store (adjust path if needed)
 
-// --- State Refs (will mostly move to Pinia later) ---
+// --- Store Instance ---
+const chatStore = useChatStore();
+
+// --- Local state for input only ---
 const newMessage = ref('');
-const isLoading = ref(false); // Loading state for AI response
 const messageAreaRef = ref<HTMLDivElement | null>(null); // Ref for scrolling
 
-// Provider Selection State
-const availableProviders = ref([
+// --- Data from Store ---
+// Use computed properties to reactively access store state
+const messages = computed(() => chatStore.getMessages);
+const isLoading = computed(() => chatStore.getIsLoading);
+const chatError = computed(() => chatStore.getError);
+// Use computed with getter/setter for v-model on store state
+const selectedProvider = computed({
+    get: () => chatStore.selectedProvider,
+    set: (value) => chatStore.setProvider(value) // Use action to set provider
+});
+
+// --- Available Providers (could also come from store or config) ---
+ const availableProviders = ref([
     { title: 'Anthropic', value: 'anthropic'},
     { title: 'OpenAI (coming soon)', value: 'openai', disabled: true },
     { title: 'Google (coming soon)', value: 'google', disabled: true },
 ]);
-const selectedProvider = ref('anthropic'); // Default provider
 
-// Placeholder messages (will come from store)
-const messages = ref([
-    { role: 'user', content: 'Hello AI!'},
-    { role: 'assistant', content: 'Hello User! How can I help you today?'}
-]);
-// --- End State Refs ---
-
-
-// --- Methods (will mostly call store actions later) ---
-const sendMessageHandler = () => {
+// --- Methods ---
+const sendMessageHandler = async () => {
   const prompt = newMessage.value.trim();
-  if (!prompt || isLoading.value) return;
+  if (!prompt || isLoading.value) return; // Check computed isLoading
 
-  console.log(`Sending to ${selectedProvider.value}:`, prompt);
-  // TODO: Replace with Pinia store action call
-  // Simulating request/response for now
-  messages.value.push({ role: 'user', content: prompt });
+  // Clear input before sending (or after successful send)
   newMessage.value = '';
-  isLoading.value = true;
-  setTimeout(() => {
-      messages.value.push({ role: 'assistant', content: `Placeholder response for "${prompt}"`});
-      isLoading.value = false;
-      scrollToBottom();
-  }, 1500);
+
+  // Call the store action
+  await chatStore.sendMessage(prompt);
+
+  // Scroll down after potential message updates
+  scrollToBottom();
 };
+
+// Method to clear store error (used by v-alert close)
+const clearChatError = () => {
+    chatStore.clearError();
+}
 
 // Auto-scroll to bottom
 const scrollToBottom = async () => {
@@ -109,11 +129,15 @@ const scrollToBottom = async () => {
     }
 };
 
-// Watch messages to scroll down (could also call after adding messages)
-watch(messages, scrollToBottom, { deep: true });
+// Watch messages length to scroll down whenever a new message is added
+watch(() => messages.value.length, () => {
+    scrollToBottom();
+});
 
-// Initial scroll
-// onMounted(scrollToBottom); // Might need onMounted import
+// Initial scroll on mount
+onMounted(() => {
+    scrollToBottom();
+});
 
 </script>
 

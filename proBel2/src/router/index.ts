@@ -36,28 +36,24 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/notes",
     name: "Notes",
-    //@ts-expect-error
     component: () => import("../views/NotesView.vue"),
     meta: { requiresAuth: true }, // <-- Protect this route
   },
   {
     path: "/doodle",
     name: "Doodle",
-    //@ts-expect-error
     component: () => import("../views/DoodleView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route
   },
   {
     path: "/calculator",
     name: "Calculator",
-    //@ts-expect-error
     component: () => import("../views/CalculatorView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route (assuming calculator is for logged-in users)
   },
   {
     path: "/flowchart",
     name: "Flowchart",
-    //@ts-expect-error
     component: () => import("../views/FlowchartView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route
   },
@@ -65,7 +61,6 @@ const routes: Array<RouteRecordRaw> = [
     // <-- Add this route object
     path: "/chat",
     name: "Chat",
-    //@ts-expect-error
     component: () => import("../views/ChatView.vue"), // Lazy-load the view
     meta: { requiresAuth: true }, // <-- Protect this route
   },
