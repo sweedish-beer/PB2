@@ -12,19 +12,23 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: () => import("../views/HomeView.vue"),
+    meta: {
+      layout: 'BlankLayout', // <-- Use BlankLayout for the home page
+      requireGuest: true, // <-- Mark as requiring guest access
+    }
     // Anyone can access home for now, or add meta: { requiresAuth: true }
   },
   {
     path: "/login",
     name: "Login",
     component: () => import("../views/LoginView.vue"),
-    meta: { requiresGuest: true }, // Mark routes only for guests
+    meta: { requiresGuest: true, layout: 'BlankLayout' }, // Mark routes only for guests
   },
   {
     path: "/register",
     name: "Register",
     component: () => import("../views/RegisterView.vue"),
-    meta: { requiresGuest: true }, // Mark routes only for guests
+    meta: { requiresGuest: true, layout: 'BlankLayout' }, // Mark routes only for guests
   },
   {
     // <-- Add Dashboard route
