@@ -11,6 +11,9 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@supabase/supabase-js": "^2.49.4",
+    "@vue-flow/controls": "^1.1.2",
+    "@vue-flow/core": "^1.42.5",
+    "@vue-flow/minimap": "^1.5.3",
     "p5": "^1.11.3",
     "p5.brush": "^1.1.4",
     "pinia": "^3.0.2",
