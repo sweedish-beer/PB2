@@ -1,11 +1,12 @@
+// src/main.ts
 import { createApp } from "vue";
-import "./style.css";
 import App from "./App.vue";
-
-// Import the Vuetify plugin
 import vuetify from "./plugins/vuetify";
+import router from "./router"; // Import the router instance
 
-// Create app with Vuetify
-createApp(App)
-  .use(vuetify) // Use the Vuetify plugin
-  .mount("#app");
+const app = createApp(App);
+
+app.use(vuetify);
+app.use(router); // Use the router
+
+app.mount("#app");

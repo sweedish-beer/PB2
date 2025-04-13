@@ -1,30 +1,17 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
+// src/App.vue
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <v-app> {/* Vuetify's main application wrapper */}
+    <v-main> {/* Ensures content aligns correctly with Vuetify components like app bars */}
+      <router-view /> {/* This is where the matched route component will be displayed */}
+    </v-main>
+  </v-app>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<script setup lang="ts">
+// No specific script needed for this basic setup yet
+</script>
+
+<style>
+/* You might want some basic global styles here or keep using style.css */
+/* Remove the default Vite styles if you haven't already */
 </style>
