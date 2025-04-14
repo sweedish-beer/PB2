@@ -33,7 +33,7 @@
 import { ref, onMounted } from 'vue';
 
 // Import the main tsParticles object and the engine loader
-import { tsParticles } from "tsparticles-core"; // Import the core instance
+import { tsParticles } from "tsparticles"; // Import the core instance
 import { loadFull } from "tsparticles"; // Keep using loadFull bundle
 
 // --- Particle Configuration Options ---
