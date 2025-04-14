@@ -9,7 +9,7 @@
           <v-spacer></v-spacer>
           <v-select 
           
-             :model-value="selectedProviderValue"     @update:modelValue="updateSelectedProvider" :items="availableProviders"
+             :model-value="selectedProviderValue as any"     @update:modelValue="updateSelectedProvider" :items="availableProviders"
             label="Provider"
             variant="solo-filled"
             density="compact"
