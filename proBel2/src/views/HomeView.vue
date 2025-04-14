@@ -1,201 +1,128 @@
-// src/views/HomeView.vue (Manual Initialization)
-
 <template>
   <div class="home-container">
-    <div id="tsparticles-container" class="particles-background"></div>
-
-    <v-container fluid class="content-container fill-height d-flex justify-center align-center">
-      <v-row>
-        <v-col cols="12" class="text-center">
+    <v-container class="content-container" fluid>
+      <v-row class="welcome-section text-center" align="center" justify="center">
+        <v-col cols="12">
           <h1 class="text-h3 font-weight-bold mb-4">Welcome to proBel2!</h1>
           <p class="text-h6 text-medium-emphasis">Your Multi-Tool Hub</p>
           <v-row justify="center" class="mt-10">
              <v-col cols="auto">
-                <v-btn prepend-icon="mdi-note-text" to="/notes" color="primary" size="large">Notes</v-btn>
+                <v-btn prepend-icon="mdi-note-text" to="/notes" color="primary" size="large" variant="elevated">Notes</v-btn>
              </v-col>
              <v-col cols="auto">
-                <v-btn prepend-icon="mdi-draw" to="/doodle" color="secondary" size="large">Doodle</v-btn>
+                <v-btn prepend-icon="mdi-draw" to="/doodle" color="secondary" size="large" variant="elevated">Doodle</v-btn>
              </v-col>
              <v-col cols="auto">
-                <v-btn prepend-icon="mdi-calculator" to="/calculator" color="accent" size="large">Calculator</v-btn>
+                <v-btn prepend-icon="mdi-calculator" to="/calculator" color="accent" size="large" variant="elevated">Calculator</v-btn>
              </v-col>
               <v-col cols="auto">
-                <v-btn prepend-icon="mdi-robot" to="/chat" color="info" size="large">AI Chat</v-btn>
+                <v-btn prepend-icon="mdi-robot" to="/chat" color="info" size="large" variant="elevated">AI Chat</v-btn>
              </v-col>
           </v-row>
         </v-col>
       </v-row>
+
+      <v-row class="mt-16 placeholder-grid">
+         <v-col cols="12">
+             <h2 class="text-h5 mb-6 text-center">Dashboard / Widgets Area</h2>
+         </v-col>
+
+         <v-col cols="12" md="6">
+            <v-card variant="outlined" class="pa-4 fill-height d-flex align-center justify-center">
+                <span class="text-disabled">Grid Cell 1 (Future Content)</span>
+            </v-card>
+         </v-col>
+          <v-col cols="12" md="6">
+             <v-card variant="outlined" class="pa-4 fill-height d-flex align-center justify-center">
+                <span class="text-disabled">Grid Cell 2 (Future Content)</span>
+            </v-card>
+          </v-col>
+           <v-col cols="12" md="6">
+             <v-card variant="outlined" class="pa-4 fill-height d-flex align-center justify-center">
+                <span class="text-disabled">Grid Cell 3 (Future Content)</span>
+             </v-card>
+           </v-col>
+           <v-col cols="12" md="6">
+             <v-card variant="outlined" class="pa-4 fill-height d-flex align-center justify-center">
+                 <span class="text-disabled">Grid Cell 4 (Future Content)</span>
+             </v-card>
+           </v-col>
+      </v-row>
+
+       <div style="height: 50vh;"></div>
+
     </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+// No specific script logic needed for this background effect
+import { onMounted } from 'vue';
 
-// Import the main tsParticles object and the engine loader
-import {tsparticles } from "tsparticles"; // Import the core instance
-import { loadFull } from "tsparticles"; // Keep using loadFull bundle
-
-// --- Particle Configuration Options ---
-// Keep your options object (or simplify for testing)
-const particlesOptions = ref({
-  background: { },
-  fpsLimit: 60,
-   interactivity: {
-    events: {
-      onHover: {
-        enable: true,
-        mode: "repulse", // Particles move away from cursor
-      },
-      onClick: {
-        enable: true,
-        mode: "push", // Adds particles on click
-      },
-      resize: { // Ensure particles recalculate on window resize
-        enable: true
-      },
-    },
-    modes: {
-      grab: { // Settings for "grab" mode (if used in onHover/onClick)
-        distance: 140,
-        links: { // Changed from line_linked
-          opacity: 1,
-        },
-      },
-      repulse: { // Settings for "repulse" mode
-        distance: 100, // How far they move
-        duration: 0.4, // How fast they move back
-      },
-      push: { // Settings for "push" mode
-        quantity: 4, // How many particles to add on click
-      },
-      bubble: { // Settings for "bubble" mode (if used)
-        distance: 400,
-        size: 40,
-        duration: 2,
-        opacity: 0.8,
-        // speed: 3, // Speed is often part of the particle config now
-      },
-      connect: { // Settings for "connect" mode (if used)
-        distance: 80,
-        links: {
-          opacity: 0.5,
-        },
-      },
-      remove: { // Settings for "remove" mode (if used)
-        quantity: 2,
-      },
-    },
-  },
-  particles: {
-    color: {
-      value: "#ad0089", // Color of the particles
-    },
-    links: { // Lines connecting particles
-      color: "#ffffff", // Link color
-      distance: 150, // Max distance to draw a link
-      enable: true, // Draw links
-      opacity: 0.4, // Link opacity
-      width: 1, // Link width
-    },
-    collisions: { // Particles bouncing off each other
-      enable: false, // Set to true if you want them to bounce
-    },
-    move: { // Particle movement settings
-      enable: true, // Particles should move
-      speed: 2, // Base speed
-      direction: "none", // Movement direction (none = random)
-      random: false, // True = different speeds, false = same base speed
-      straight: false, // True = only move straight, false = slight angle changes
-      outModes: { // What happens when particles leave the canvas
-        default: "out", // "out" = disappear, "bounce" = bounce off edge
-      },
-      attract: { // Particles attracting each other
-        enable: true,
-        rotateX: 600,
-        rotateY: 1200,
-      },
-    },
-    number: { // How many particles
-      density: {
-        enable: true, // Adjust number based on screen area
-        area: 800, // Smaller number = denser particles
-      },
-      value: 80, // Base number of particles
-    },
-    opacity: {
-      value: 0.5, // Base opacity
-      // Random opacity can be set using { min: 0.1, max: 0.5 }
-      // Animation can be added here too
-    },
-    shape: {
-      type: "circle", // "circle", "square", "triangle", "polygon", "star", "image"
-      // polygon: { nb_sides: 5 }, // Use if shape is polygon
-      // image: { src: 'path/to/image.png', width: 100, height: 100 } // Use if shape is image
-    },
-    size: { // Particle size
-      value: { min: 1, max: 3 }, // Particles will have random size between 1 and 3
-      // value: 3, // Use if you want a fixed size
-      // animation: { enable: false, speed: 5, minimumValue: 0.1, sync: false }, // Optional size animation
-    },
-  },
-  detectRetina: true, // Increases particle density on high-DPI screens
-});
- 
- 
-
-// --- Manual Initialization on Mount ---
-onMounted(async () => {
-  try {
-    console.log("Attempting manual particles initialization...");
-
-    // Load the engine features (pass the main tsParticles instance)
-    // This adds shapes, modes, etc. to the tsParticles object
-    await loadFull(tsParticles);
-    console.log("tsParticles engine features loaded.");
-
-    // Load particles onto the container div
-    // Pass the options directly
-    await tsParticles.load({
-        id: "tsparticles-container", // ID of the div in the template
-        options: particlesOptions.value
-    });
-    console.log("tsParticles instance loaded onto container.");
-
-  } catch (error) {
-      console.error("Error initializing tsParticles manually:", error);
-  }
+onMounted(() => {
+    // Potential hook for later if JS interaction is needed
+    console.log("HomeView mounted.");
 });
 
 </script>
 
 <style scoped>
-/* CSS remains mostly the same */
 .home-container {
-  position: relative;
   width: 100%;
-  min-height: calc(100vh - 64px);
-  overflow: hidden;
-  background-color: #121212;
-}
+  min-height: 100vh; /* Ensure it takes at least full viewport height */
+  padding-top: 64px; /* Adjust based on your app bar height */
+  padding-bottom: 4rem; /* Add padding at the bottom */
 
-/* Style the container div */
-#tsparticles-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+  /* --- Background Configuration --- */
+  /* Layer 1: Geometric Pattern (dots) */
+  /* Layer 2: Vertical Gradient */
+  background-image:
+    /* Dots: color alpha size, transparent size */
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.1px),
+    /* Gradient: dark -> lighter */
+    linear-gradient(to bottom,
+       #1a1a2e 0%,  /* Dark Purple/Blue Start */
+       #3b2a4a 50%, /* Intermediate */
+       #ff8a80 150% /* Orangy-Pinkish End (extends beyond 100% height) */
+     );
+
+  /* Pattern size / repeat */
+  background-size:
+      18px 18px, /* Size of the repeating dot pattern */
+      100% auto; /* Gradient covers full width, height is auto (will stretch) */
+
+  /* Ensure gradient scrolls with the page, pattern repeats */
+  background-attachment: local, scroll; /* Pattern repeats locally, gradient scrolls */
+  background-repeat: repeat, no-repeat;
+
+  /* Optional: Smooth background scroll behavior */
+  scroll-behavior: smooth;
 }
 
 .content-container {
-  position: relative;
+  position: relative; /* Ensures content stays above background patterns if needed */
   z-index: 1;
-  padding: 2rem;
-  color: #ffffff;
+  color: #ffffff; /* Default text color for readability */
 }
 
-h1 { color: #FFFFFF; }
-p { color: rgba(255, 255, 255, 0.7); }
+.welcome-section {
+    min-height: 50vh; /* Give the welcome section some height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+  color: #FFFFFF;
+}
+p {
+   color: rgba(255, 255, 255, 0.8);
+}
+
+/* Style placeholder grid */
+.placeholder-grid .v-card {
+    min-height: 150px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
 </style>
