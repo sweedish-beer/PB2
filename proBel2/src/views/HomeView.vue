@@ -39,13 +39,110 @@ import { loadFull } from "tsparticles"; // Keep using loadFull bundle
 // --- Particle Configuration Options ---
 // Keep your options object (or simplify for testing)
 const particlesOptions = ref({
-  // ... (same options as before) ...
   background: { },
   fpsLimit: 60,
-  interactivity: { /* ... */ },
-  particles: { /* ... */ },
-  detectRetina: true,
+   interactivity: {
+    events: {
+      onHover: {
+        enable: true,
+        mode: "repulse", // Particles move away from cursor
+      },
+      onClick: {
+        enable: true,
+        mode: "push", // Adds particles on click
+      },
+      resize: { // Ensure particles recalculate on window resize
+        enable: true
+      },
+    },
+    modes: {
+      grab: { // Settings for "grab" mode (if used in onHover/onClick)
+        distance: 140,
+        links: { // Changed from line_linked
+          opacity: 1,
+        },
+      },
+      repulse: { // Settings for "repulse" mode
+        distance: 100, // How far they move
+        duration: 0.4, // How fast they move back
+      },
+      push: { // Settings for "push" mode
+        quantity: 4, // How many particles to add on click
+      },
+      bubble: { // Settings for "bubble" mode (if used)
+        distance: 400,
+        size: 40,
+        duration: 2,
+        opacity: 0.8,
+        // speed: 3, // Speed is often part of the particle config now
+      },
+      connect: { // Settings for "connect" mode (if used)
+        distance: 80,
+        links: {
+          opacity: 0.5,
+        },
+      },
+      remove: { // Settings for "remove" mode (if used)
+        quantity: 2,
+      },
+    },
+  },
+  particles: {
+    color: {
+      value: "#ad0089", // Color of the particles
+    },
+    links: { // Lines connecting particles
+      color: "#ffffff", // Link color
+      distance: 150, // Max distance to draw a link
+      enable: true, // Draw links
+      opacity: 0.4, // Link opacity
+      width: 1, // Link width
+    },
+    collisions: { // Particles bouncing off each other
+      enable: false, // Set to true if you want them to bounce
+    },
+    move: { // Particle movement settings
+      enable: true, // Particles should move
+      speed: 2, // Base speed
+      direction: "none", // Movement direction (none = random)
+      random: false, // True = different speeds, false = same base speed
+      straight: false, // True = only move straight, false = slight angle changes
+      outModes: { // What happens when particles leave the canvas
+        default: "out", // "out" = disappear, "bounce" = bounce off edge
+      },
+      attract: { // Particles attracting each other
+        enable: true,
+        rotateX: 600,
+        rotateY: 1200,
+      },
+    },
+    number: { // How many particles
+      density: {
+        enable: true, // Adjust number based on screen area
+        area: 800, // Smaller number = denser particles
+      },
+      value: 80, // Base number of particles
+    },
+    opacity: {
+      value: 0.5, // Base opacity
+      // Random opacity can be set using { min: 0.1, max: 0.5 }
+      // Animation can be added here too
+    },
+    shape: {
+      type: "circle", // "circle", "square", "triangle", "polygon", "star", "image"
+      // polygon: { nb_sides: 5 }, // Use if shape is polygon
+      // image: { src: 'path/to/image.png', width: 100, height: 100 } // Use if shape is image
+    },
+    size: { // Particle size
+      value: { min: 1, max: 3 }, // Particles will have random size between 1 and 3
+      // value: 3, // Use if you want a fixed size
+      // animation: { enable: false, speed: 5, minimumValue: 0.1, sync: false }, // Optional size animation
+    },
+  },
+  detectRetina: true, // Increases particle density on high-DPI screens
 });
+ 
+ 
 
 // --- Manual Initialization on Mount ---
 onMounted(async () => {
