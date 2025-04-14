@@ -61,7 +61,7 @@
               @click:close="clearChatError"
             >
              {{ chatError }}
-            </->
+            </v-alert>
         </div>
 
         <div class="input-area pa-2 pb-4 d-flex align-center" style="background-color: rgb(var(--v-theme-surface));">
