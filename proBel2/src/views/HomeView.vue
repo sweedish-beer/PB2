@@ -1,82 +1,150 @@
+// src/views/HomeView.vue
+
 <template>
-  <v-container fluid class="landing-page text-center pa-0 fill-height">
+  <div class="home-container">
+    <Particles
+      id="tsparticles"
+      :options="particlesOptions"
+      :particlesInit="particlesInit"
+      class="particles-background"
+    />
 
-    {/* Optional: Animated Background Component would go here if we built it */}
-    {/* <AnimatedBackground style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;" /> */}
-
-    {/* Main Content Area - Use z-index to ensure it's above background */}
-    <v-row align="center" justify="center" class="fill-height" style="position: relative; z-index: 1;">
-      <v-col cols="12" md="8" lg="6">
-
-        {/* Simple Fade Transition for Content */}
-        <v-scroll-y-transition appear>
-          <div> {/* Wrap content in div for transition */}
-            {/* Logo/Icon (Example) */}
-            <v-icon size="x-large" color="primary" class="mb-6">mdi-rocket-launch-outline</v-icon>
-
-            {/* App Title */}
-            <h1 class="text-h3 font-weight-bold mb-4">Welcome to Multi-App!</h1>
-
-            {/* Tagline/Description */}
-            <p class="text-h6 text-medium-emphasis mb-8">
-              Your integrated workspace for Notes, Doodles, AI Chat, Calculations, and Flowcharts. <br /> Boost your productivity.
-            </p>
-
-            {/* Action Buttons */}
-            <v-row justify="center" dense>
+    <v-container fluid class="content-container fill-height d-flex justify-center align-center">
+      <v-row>
+        <v-col cols="12" class="text-center">
+          <h1 class="text-h3 font-weight-bold mb-4">Welcome to proBel2!</h1>
+          <p class="text-h6 text-medium-emphasis">Your Multi-Tool Hub</p>
+          <v-row justify="center" class="mt-10">
+             <v-col cols="auto">
+                <v-btn prepend-icon="mdi-note-text" to="/notes" color="primary" size="large">Notes</v-btn>
+             </v-col>
+             <v-col cols="auto">
+                <v-btn prepend-icon="mdi-draw" to="/doodle" color="secondary" size="large">Doodle</v-btn>
+             </v-col>
+             <v-col cols="auto">
+                <v-btn prepend-icon="mdi-calculator" to="/calculator" color="accent" size="large">Calculator</v-btn>
+             </v-col>
               <v-col cols="auto">
-                <v-btn
-                  color="primary"
-                  size="large"
-                  :to="{ name: 'Login' }"
-                  prepend-icon="mdi-login"
-                  elevation="2"
-                  >
-                  Login
-                  </v-btn>
-              </v-col>
-              <v-col cols="auto">
-                 <v-btn
-                  variant="outlined"
-                  size="large"
-                  :to="{ name: 'Register' }"
-                   prepend-icon="mdi-account-plus"
-                   elevation="2"
-                 >
-                  Register
-                  </v-btn>
-              </v-col>
-            </v-row>
-
-             {/* Placeholder for more animated components later */}
-             <div class="mt-16">
-                <p class="text-caption text-disabled">(More interactive elements coming soon!)</p>
-             </div>
-
-          </div>
-        </v-scroll-y-transition>
-
-      </v-col>
-    </v-row>
-  </v-container>
+                <v-btn prepend-icon="mdi-robot" to="/chat" color="info" size="large">AI Chat</v-btn>
+             </v-col>
+             </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
-// No specific script logic needed for this basic landing page yet
-// Animations primarily handled by Vuetify transitions or CSS
+import { ref } from 'vue';
+// --- Correct Import Statement ---
+import { ParticlesComponent as Particles } from "@tsparticles/vue3";
+// --------------------------------
+
+// Import the 'full' engine bundle
+import { loadFull } from "tsparticles";
+import type { Engine } from "tsparticles-engine";
+
+// --- Particle Engine Initialization ---
+const particlesInit = async (engine: Engine): Promise<void> => {
+    await loadFull(engine);
+};
+
+// --- Particle Configuration Options ---
+const particlesOptions = ref({
+  background: {
+    // color: '#1e1e2e', // Optional background color via particles config
+  },
+  fpsLimit: 60,
+  interactivity: {
+    events: {
+      onHover: {
+        enable: true,
+        mode: "repulse", // Try "grab", "bubble", "connect"
+      },
+      onClick: {
+        enable: true,
+        mode: "push", // Try "remove", "bubble"
+      },
+      resize: true,
+    },
+    modes: {
+      grab: { distance: 140, links: { opacity: 1 } }, // Changed line_linked to links
+      repulse: { distance: 100, duration: 0.4 },
+      push: { quantity: 4 }, // Changed particles_nb to quantity
+      bubble: { distance: 400, size: 40, duration: 2, opacity: 0.8 }, // Removed speed
+      connect: { distance: 80, links: { opacity: 0.5 } },
+      remove: { quantity: 2 } // Changed particles_nb to quantity
+    },
+  },
+  particles: {
+    color: { value: "#ffffff" },
+    links: {
+      color: "#ffffff",
+      distance: 150,
+      enable: true,
+      opacity: 0.4,
+      width: 1,
+    },
+     collisions: { // Optional: Make particles bounce off each other
+        enable: false, // Set to true to enable bouncing
+     },
+    move: {
+      enable: true,
+      speed: 2,
+      direction: "none",
+      random: false,
+      straight: false,
+      outModes: { // Changed out_mode to outModes
+        default: "out", // "out", "bounce"
+      },
+      attract: { enable: false, rotateX: 600, rotateY: 1200 },
+    },
+    number: {
+      density: { enable: true, area: 800 }, // Changed value_area to area
+      value: 80,
+    },
+    opacity: { value: 0.5 }, // Simplified opacity
+    shape: { type: "circle" },
+    size: {
+      value: { min: 1, max: 3 }, // Use min/max for random size
+    },
+  },
+  detectRetina: true,
+});
+
 </script>
 
 <style scoped>
-.landing-page {
-  /* Example gradient background if not using canvas */
-  background: linear-gradient(to bottom right, rgb(var(--v-theme-surface)), rgb(var(--v-theme-primary)));
-  color: white; /* Adjust text color for background */
+.home-container {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 64px); /* Adjust 64px based on app bar height */
+  overflow: hidden;
+  /* Optional: Add a fallback background */
+  background-color: #121212; /* Example dark background */
 }
 
-/* Ensure text is readable over gradient */
-h1, p {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+.particles-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Place behind content */
 }
 
-/* Add more styles for animations or specific elements */
+.content-container {
+  position: relative;
+  z-index: 1; /* Layer content above particles */
+  padding: 2rem;
+  color: #ffffff; /* Ensure text is readable */
+}
+
+/* Style your content */
+h1 {
+  color: #FFFFFF;
+}
+p {
+   color: rgba(255, 255, 255, 0.7);
+}
 </style>
