@@ -44,7 +44,7 @@ import Particles from "@tsparticles/vue3";
 // Import the 'full' engine bundle (loads all features)
 import { loadFull } from "tsparticles";
 // --- Correction: Import Engine type from 'tsparticles-engine' ---
-import type { Engine } from "tsparticles-engine";
+import type { Engine } from "@tsparticles/engine";
 // ----------------------------------------------------------
 
 
