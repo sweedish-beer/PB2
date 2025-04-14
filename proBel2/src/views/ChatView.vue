@@ -7,8 +7,7 @@
           <v-toolbar-title>AI Chat</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-select
-            v-model="selectedProvider"
-            :items="availableProviders"
+             :model-value="selectedProviderValue"     @update:modelValue="updateSelectedProvider" :items="availableProviders"
             label="Provider"
             variant="solo-filled"
             density="compact"
@@ -17,6 +16,7 @@
             class="provider-select mr-2"
           ></v-select>
         </v-toolbar>
+
 
         <div ref="messageAreaRef" class="message-area flex-grow-1 pa-4">
           <div v-if="isLoadingHistory" class="text-center my-4">
@@ -107,18 +107,25 @@ const messages = computed(() => chatStore.getMessages);
 const isLoadingHistory = computed(() => chatStore.getIsLoadingHistory); // Use specific state
 const isLoadingReply = computed(() => chatStore.getIsLoadingReply);   // Use specific state
 const chatError = computed(() => chatStore.getError);
-const selectedProvider = computed({
-    get: () => chatStore.selectedProvider,
-    // --- Add explicit type here ---
-    set: (value: ChatState['selectedProvider']) => { // <-- Explicitly type 'value'
-        // Ensure value is not null/undefined before calling store action if necessary,
-        // although v-select usually provides a valid item value here.
-        if (value) {
-           chatStore.setProvider(value); // Use action to set provider
-        }
-    }
-});
+// --- MODIFICATION START ---
+// 1. Computed property purely for GETTING the value for the v-select
+const selectedProviderValue = computed(() => chatStore.selectedProvider);
 
+// 2. Method to handle the UPDATE event from v-select
+const updateSelectedProvider = (newValue: ChatState['selectedProvider'] | null | undefined) => {
+    // Add type check: Ensure the value is one of the expected strings before calling store
+    if (newValue && ['anthropic', 'openai', 'google'].includes(newValue)) {
+        // Type assertion might be needed if TS still complains, but check includes should narrow it
+        chatStore.setProvider(newValue as ChatState['selectedProvider']);
+    } else if (newValue === null || newValue === undefined) {
+        // Handle cases where v-select might emit null/undefined if it were clearable, etc.
+        // For now, we probably don't want to do anything or might reset to a default.
+        console.warn("v-select emitted null/undefined provider value:", newValue);
+        // Optionally, reset to default if needed:
+        // chatStore.setProvider('anthropic');
+    }
+};
+// --- MODIFICATION END ---
 // --- Available Providers ---
  const availableProviders = ref([/* ... same as before ... */]);
 
