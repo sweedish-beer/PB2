@@ -13,7 +13,7 @@ export interface Message {
 }
 
 // Define store state structure
-interface ChatState {
+export interface ChatState {
   messages: Message[];
   isLoadingHistory: boolean; // Specific loading state for history
   isLoadingReply: boolean; // Specific loading state for AI reply

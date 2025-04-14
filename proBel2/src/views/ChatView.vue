@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, watch, onMounted } from 'vue';
-import { useChatStore } from '@/stores/chat';
+import { useChatStore, type ChatState } from '@/stores/chat'; // <-- Import ChatState type
 import { useAuthStore } from '@/stores/auth'; // <-- Import Auth Store
 
 // --- Store Instances ---
@@ -109,7 +109,14 @@ const isLoadingReply = computed(() => chatStore.getIsLoadingReply);   // Use spe
 const chatError = computed(() => chatStore.getError);
 const selectedProvider = computed({
     get: () => chatStore.selectedProvider,
-    set: (value) => chatStore.setProvider(value)
+    // --- Add explicit type here ---
+    set: (value: ChatState['selectedProvider']) => { // <-- Explicitly type 'value'
+        // Ensure value is not null/undefined before calling store action if necessary,
+        // although v-select usually provides a valid item value here.
+        if (value) {
+           chatStore.setProvider(value); // Use action to set provider
+        }
+    }
 });
 
 // --- Available Providers ---
