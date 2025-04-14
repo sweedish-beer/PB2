@@ -1,13 +1,13 @@
 // src/views/HomeView.vue
 
 <template>
-  <div class="home-container">
+  <div>
     <Particles
       id="tsparticles"
       :options="particlesOptions"
       :particlesInit="particlesInit"
-      class="particles-background"
-    />
+      class="particles-background">
+    </Particles>
     <v-container fluid class="content-container fill-height d-flex justify-center align-center">
       <v-row>
         <v-col cols="12" class="text-center">
