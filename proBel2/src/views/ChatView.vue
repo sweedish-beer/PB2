@@ -16,23 +16,42 @@
             hide-details
             class="provider-select mr-2"
           ></v-select>
-          </v-toolbar>
+        </v-toolbar>
 
         <div ref="messageAreaRef" class="message-area flex-grow-1 pa-4">
-          <div v-for="(message, index) in messages" :key="index"
-               :class="['message', message.role === 'user' ? 'user-message' : 'assistant-message', 'mb-3']">
-            <v-chip :color="message.role === 'user' ? 'primary' : 'surface-variant'" label>
-               {{ message.content }}
-            </v-chip>
-          </div>
+          <div v-if="isLoadingHistory" class="text-center my-4">
+               <v-progress-circular indeterminate color="primary"></v-progress-circular>
+               <p>Loading history...</p>
+            </div>
 
-          <div v-if="isLoading" class="message assistant-message mb-3 d-flex align-center">
+          <template v-else>
+              <div v-if="messages.length === 0 && authStore.user" class="text-center text-disabled my-4">
+                  No messages yet. Start chatting!
+               </div>
+               <div v-if="messages.length === 0 && !authStore.user" class="text-center text-disabled my-4">
+                  Please log in to see your chat history.
+               </div>
+
+              <div v-for="(message) in messages" :key="message.id || message.content + message.role" :class="['message', message.role === 'user' ? 'user-message' : message.role === 'assistant' ? 'assistant-message' : 'error-message', 'mb-3']">
+                 <v-alert v-if="message.role === 'error'" type="error" density="compact" variant="tonal" class="message-bubble">
+                    {{ message.content }}
+                 </v-alert>
+                 <v-chip v-else :color="message.role === 'user' ? 'primary' : 'surface-variant'" label class="message-bubble">
+                     <span v-if="message.role === 'assistant' && message.model" class="text-caption d-block mb-1 text-disabled">
+                         Model: {{ message.model }}
+                     </span>
+                     <span style="white-space: pre-wrap;">{{ message.content }}</span>
+                 </v-chip>
+              </div>
+           </template>
+
+           <div v-if="isLoadingReply" class="message assistant-message mb-3 d-flex align-center">
              <v-progress-circular indeterminate size="20" width="2" class="mr-2"></v-progress-circular>
              <span>Thinking...</span>
           </div>
-           <v-alert
-              v-if="chatError"
-              type="error"
+
+          <v-alert
+              v-if="chatError && !isLoadingHistory" type="error"
               density="compact"
               variant="tonal"
               class="mt-3"
@@ -40,7 +59,7 @@
               @click:close="clearChatError"
             >
              {{ chatError }}
-            </v-alert>
+            </->
         </div>
 
         <div class="input-area pa-2 pb-4 d-flex align-center" style="background-color: rgb(var(--v-theme-surface));">
@@ -56,14 +75,13 @@
             filled
             class="mr-2"
             @keydown.enter.prevent="sendMessageHandler"
-          ></v-textarea>
+            :disabled="isLoadingHistory || isLoadingReply || !authStore.user" ></v-textarea>
           <v-btn
             icon="mdi-send"
             color="primary"
             @click="sendMessageHandler"
-            :disabled="!newMessage.trim()"
-            :loading="isLoading"
-          ></v-btn>
+            :disabled="!newMessage.trim() || !authStore.user"
+            :loading="isLoadingReply" ></v-btn>
         </div>
 
       </v-col>
@@ -72,125 +90,112 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, watch, onMounted } from 'vue'; // Added computed, onMounted
-import { useChatStore } from '@/stores/chat'; // Import the chat store (adjust path if needed)
+import { ref, computed, nextTick, watch, onMounted } from 'vue';
+import { useChatStore } from '@/stores/chat';
+import { useAuthStore } from '@/stores/auth'; // <-- Import Auth Store
 
-// --- Store Instance ---
+// --- Store Instances ---
 const chatStore = useChatStore();
+const authStore = useAuthStore(); // <-- Get auth store instance
 
-// --- Local state for input only ---
+// --- Local state ---
 const newMessage = ref('');
-const messageAreaRef = ref<HTMLDivElement | null>(null); // Ref for scrolling
+const messageAreaRef = ref<HTMLDivElement | null>(null);
 
 // --- Data from Store ---
-// Use computed properties to reactively access store state
 const messages = computed(() => chatStore.getMessages);
-const isLoading = computed(() => chatStore.getIsLoading);
+const isLoadingHistory = computed(() => chatStore.getIsLoadingHistory); // Use specific state
+const isLoadingReply = computed(() => chatStore.getIsLoadingReply);   // Use specific state
 const chatError = computed(() => chatStore.getError);
-// Use computed with getter/setter for v-model on store state
 const selectedProvider = computed({
     get: () => chatStore.selectedProvider,
-    set: (value) => chatStore.setProvider(value) // Use action to set provider
+    set: (value) => chatStore.setProvider(value)
 });
 
-// --- Available Providers (could also come from store or config) ---
- const availableProviders = ref([
-    { title: 'Anthropic', value: 'anthropic'},
-    { title: 'OpenAI (coming soon)', value: 'openai', disabled: true },
-    { title: 'Google (coming soon)', value: 'google', disabled: true },
-]);
+// --- Available Providers ---
+ const availableProviders = ref([/* ... same as before ... */]);
 
 // --- Methods ---
 const sendMessageHandler = async () => {
   const prompt = newMessage.value.trim();
-  if (!prompt || isLoading.value) return; // Check computed isLoading
-
-  // Clear input before sending (or after successful send)
+  if (!prompt || isLoadingReply.value) return;
   newMessage.value = '';
-
-  // Call the store action
   await chatStore.sendMessage(prompt);
-
-  // Scroll down after potential message updates
-  scrollToBottom();
+  // Scroll handled by watcher
 };
 
-// Method to clear store error (used by v-alert close)
 const clearChatError = () => {
     chatStore.clearError();
 }
 
-// Auto-scroll to bottom
-const scrollToBottom = async () => {
-    // Wait for DOM update after adding message
+const scrollToBottom = async (behavior: ScrollBehavior = 'auto') => {
     await nextTick();
     if (messageAreaRef.value) {
-        messageAreaRef.value.scrollTop = messageAreaRef.value.scrollHeight;
+        messageAreaRef.value.scrollTo({ top: messageAreaRef.value.scrollHeight, behavior });
     }
 };
 
-// Watch messages length to scroll down whenever a new message is added
-watch(() => messages.value.length, () => {
-    scrollToBottom();
+// Watch messages length to scroll down (smooth scroll for new messages)
+watch(() => messages.value.length, (newLength, oldLength) => {
+    if (newLength > oldLength) { // Only scroll smoothly on new message add
+         scrollToBottom('smooth');
+    }
 });
 
-// Initial scroll on mount
+// --- Load History on Mount or Auth Change ---
 onMounted(() => {
-    scrollToBottom();
+    if (authStore.user) {
+        console.log("ChatView mounted, user logged in. Loading history.");
+        chatStore.loadChatHistory().then(() => {
+             scrollToBottom('auto'); // Scroll immediately after history loads
+        });
+    } else {
+         console.log("ChatView mounted, user not logged in.");
+         chatStore.messages = []; // Ensure messages are clear if user isn't logged in initially
+    }
+});
+
+// Watch for user login/logout to load/clear history
+watch(() => authStore.user, (newUser, oldUser) => {
+     console.log("Auth user changed:", newUser);
+    if (newUser && !oldUser) { // User logged in
+        chatStore.loadChatHistory().then(() => {
+             scrollToBottom('auto');
+        });
+    } else if (!newUser && oldUser) { // User logged out
+        chatStore.messages = []; // Clear messages
+        chatStore.error = null; // Clear any errors
+    }
 });
 
 </script>
 
 <style scoped>
-.chat-container {
-  height: calc(100vh - 64px); /* Adjust based on your app bar height */
-  display: flex;
-  flex-direction: column;
+/* ... existing styles ... */
+
+/* Add style for error messages */
+.error-message {
+    justify-content: center; /* Center error alerts */
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%;
+}
+.error-message .v-alert {
+    width: 100%;
 }
 
-.message-area {
-  overflow-y: auto;
-  flex-grow: 1; /* Takes up remaining space */
+/* Adjust message bubble styles */
+.message-bubble {
+  height: auto;
+  white-space: normal;
+  max-width: 100%;
+  padding: 8px 12px; /* Adjust padding */
+  word-break: break-word;
 }
 
-.message {
-  display: flex;
-  max-width: 80%; /* Limit width of the message container */
-  /* Align self based on role */
+.message-bubble :deep(.v-chip__content) {
+   display: block;
+   white-space: pre-wrap;
 }
-
-.user-message {
-  justify-content: flex-end;
-  margin-left: auto;
-}
-
-.assistant-message {
-  justify-content: flex-start;
-  margin-right: auto;
-}
-
-.input-area {
-   border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-}
-
-.provider-select {
-    max-width: 200px; /* Limit width of select */
-}
-
-/* --- Add/Modify these rules --- */
-.message .v-chip {
-  height: auto; /* Allow chip height to adjust to content */
-  white-space: normal; /* Allow wrapping within the chip */
-  max-width: 100%; /* Prevent chip from exceeding message container width */
-  padding-top: 8px; /* Add some padding */
-  padding-bottom: 8px;
-}
-
-.message .v-chip :deep(.v-chip__content) {
-   display: block; /* Make content behave like a block for wrapping */
-   white-space: pre-wrap; /* Preserve whitespace (like line breaks) but allow wrapping */
-   word-break: break-word; /* Force long words/URLs to break */
-}
-/* --- End Add/Modify --- */
 
 </style>
