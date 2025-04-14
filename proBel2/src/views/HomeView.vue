@@ -59,7 +59,7 @@ const particlesInit = async (engine: Engine): Promise<void> => {
 // Needs 'ref' to be reactive
 const particlesOptions = ref({
   // ... (options remain the same as before) ...
-   background: { /* color: '#1e1e2e', */ },
+   background: {linearGradient: {enable: true, angle: 45, start: {x: 0, y: 0}, stop: {x: 1, y: 1}, colorStops: [{offset: 0, color: "#00aca6"}, {offset: 1, color: "#ad0089"}]}},
   fpsLimit: 60,
   interactivity: {
     events: {
@@ -77,8 +77,8 @@ const particlesOptions = ref({
     },
   },
   particles: {
-    color: { value: "#ffffff" },
-    links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.4, width: 1 },
+    color: { value: "#ad0089" },
+    links: { color: "#00aca6", distance: 150, enable: true, opacity: 0.4, width: 1 },
     collisions: { enable: false },
     move: {
       enable: true,
@@ -106,7 +106,7 @@ const particlesOptions = ref({
   width: 100%;
   min-height: calc(100vh - 64px); /* Adjust 64px based on app bar height */
   overflow: hidden;
-  background-color: #121212;
+  background-color: #11111;
 }
 
 .particles-background {
@@ -115,7 +115,7 @@ const particlesOptions = ref({
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 2;
 }
 
 .content-container {
