@@ -1,3 +1,4 @@
+//@ts-ignore
 <template>
   <v-container fluid class="fill-height pa-0 chat-container">
     <v-row no-gutters class="fill-height">
@@ -6,7 +7,8 @@
         <v-toolbar density="compact" color="surface">
           <v-toolbar-title>AI Chat</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-select
+          <v-select 
+          
              :model-value="selectedProviderValue"     @update:modelValue="updateSelectedProvider" :items="availableProviders"
             label="Provider"
             variant="solo-filled"
