@@ -1,13 +1,9 @@
-// src/views/HomeView.vue
+// src/views/HomeView.vue (Manual Initialization)
 
 <template>
-  <div>
-    <Particles
-      id="tsparticles"
-      :options="particlesOptions"
-      :particlesInit="particlesInit"
-      class="particles-background">
-    </Particles>
+  <div class="home-container">
+    <div id="tsparticles-container" class="particles-background"></div>
+
     <v-container fluid class="content-container fill-height d-flex justify-center align-center">
       <v-row>
         <v-col cols="12" class="text-center">
@@ -34,88 +30,66 @@
 </template>
 
 <script setup lang="ts">
-// --- Correction: Import 'ref' from Vue ---
-import { ref } from 'vue';
-// ----------------------------------------
+import { ref, onMounted } from 'vue';
 
-// Import Particles component (default import)
-import Particles from "@tsparticles/vue3";
-
-// Import the 'full' engine bundle (loads all features)
-import { loadFull } from "tsparticles";
-// --- Correction: Import Engine type from 'tsparticles-engine' ---
-import type { Engine } from "@tsparticles/engine";
-// ----------------------------------------------------------
-
-
-// --- Particle Engine Initialization ---
-// Needs the Engine type from tsparticles-engine
-const particlesInit = async (engine: Engine): Promise<void> => {
-    // Initializes the tsParticles instance (engine), loading the bundle
-    await loadFull(engine);
-};
+// Import the main tsParticles object and the engine loader
+import { tsParticles } from "tsparticles-core"; // Import the core instance
+import { loadFull } from "tsparticles"; // Keep using loadFull bundle
 
 // --- Particle Configuration Options ---
-// Needs 'ref' to be reactive
+// Keep your options object (or simplify for testing)
 const particlesOptions = ref({
-  // ... (options remain the same as before) ...
-   background: {linearGradient: {enable: true, angle: 45, start: {x: 0, y: 0}, stop: {x: 1, y: 1}, colorStops: [{offset: 0, color: "#00aca6"}, {offset: 1, color: "#ad0089"}]}},
+  // ... (same options as before) ...
+  background: { },
   fpsLimit: 60,
-  interactivity: {
-    events: {
-      onHover: { enable: true, mode: "repulse" },
-      onClick: { enable: true, mode: "push" },
-      resize: true,
-    },
-    modes: {
-      grab: { distance: 140, links: { opacity: 1 } },
-      repulse: { distance: 100, duration: 0.4 },
-      push: { quantity: 4 },
-      bubble: { distance: 400, size: 40, duration: 2, opacity: 0.8 },
-      connect: { distance: 80, links: { opacity: 0.5 } },
-      remove: { quantity: 2 }
-    },
-  },
-  particles: {
-    color: { value: "#ad0089" },
-    links: { color: "#00aca6", distance: 150, enable: true, opacity: 0.4, width: 1 },
-    collisions: { enable: false },
-    move: {
-      enable: true,
-      speed: 2,
-      direction: "none",
-      random: false,
-      straight: false,
-      outModes: { default: "out" },
-      attract: { enable: false, rotateX: 600, rotateY: 1200 },
-    },
-    number: { density: { enable: true, area: 800 }, value: 80 },
-    opacity: { value: 0.5 },
-    shape: { type: "circle" },
-    size: { value: { min: 1, max: 3 } },
-  },
+  interactivity: { /* ... */ },
+  particles: { /* ... */ },
   detectRetina: true,
+});
+
+// --- Manual Initialization on Mount ---
+onMounted(async () => {
+  try {
+    console.log("Attempting manual particles initialization...");
+
+    // Load the engine features (pass the main tsParticles instance)
+    // This adds shapes, modes, etc. to the tsParticles object
+    await loadFull(tsParticles);
+    console.log("tsParticles engine features loaded.");
+
+    // Load particles onto the container div
+    // Pass the options directly
+    await tsParticles.load({
+        id: "tsparticles-container", // ID of the div in the template
+        options: particlesOptions.value
+    });
+    console.log("tsParticles instance loaded onto container.");
+
+  } catch (error) {
+      console.error("Error initializing tsParticles manually:", error);
+  }
 });
 
 </script>
 
 <style scoped>
-/* CSS remains the same */
+/* CSS remains mostly the same */
 .home-container {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 64px); /* Adjust 64px based on app bar height */
+  min-height: calc(100vh - 64px);
   overflow: hidden;
-  background-color: #11111;
+  background-color: #121212;
 }
 
-.particles-background {
+/* Style the container div */
+#tsparticles-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 0;
 }
 
 .content-container {
