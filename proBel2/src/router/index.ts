@@ -75,8 +75,7 @@ const router = createRouter({
 });
 
 // Global Navigation Guard
-//@ts-ignore
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   // Instantiate the auth store INSIDE the guard
   const authStore = useAuthStore();
 
