@@ -35,16 +35,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-// --- Correct Import Statement ---
-import { ParticlesComponent as Particles } from "@tsparticles/vue3";
-// --------------------------------
+// --- Correction 1: Use default import for the component ---
+import Particles from "@tsparticles/vue3";
+// -----------------------------------------------------------
 
 // Import the 'full' engine bundle
 import { loadFull } from "tsparticles";
-import type { Engine } from "tsparticles-engine";
+// --- Correction 2: Import Engine type from 'tsparticles' ---
+import type { Engine } from "tsparticles";
+// ----------------------------------------------------------
+
 
 // --- Particle Engine Initialization ---
+// No changes needed here, the Engine type is now correctly imported
 const particlesInit = async (engine: Engine): Promise<void> => {
     await loadFull(engine);
 };
