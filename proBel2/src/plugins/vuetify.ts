@@ -27,9 +27,9 @@ const lightTheme: ThemeDefinition = {
 const darkTheme: ThemeDefinition = {
   dark: true,
   colors: {
-    background: "#121212", // Dark background
-    surface: "#1E1E1E", // Dark surfaces
-    primary: "#BB86FC", // Primary color for dark theme
+    background: "#111111", // Dark background
+    surface: "#222222", // Dark surfaces
+    primary: "#6200EE", // Primary color (example purple)
     secondary: "#03DAC6", // Secondary color
     error: "#CF6679",
     info: "#2196F3",
